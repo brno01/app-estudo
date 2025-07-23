@@ -1,0 +1,19 @@
+{
+  "name": "rest-api",
+  "version": "1.0.0",
+  "description": "REST API para estudos",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "rest",
+    "node",
+    "api"
+  ],
+  "author": "Bruno Santos de Oliveira",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
