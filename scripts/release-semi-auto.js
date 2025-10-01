@@ -25,21 +25,15 @@ if (!status) {
     process.exit(0);
 }
 
-let hadStash = false;
-
-console.log('Alterações detectadas. Criando stash temporário...');
-execSync('git stash push -m "stash antes do release-auto"', { stdio: 'inherit' });
-hadStash = true;
+// Apenas verifica se o diretório está limpo
+if (status) {
+    console.log('\n⚠️ Diretório git não está limpo. Commit ou stash suas alterações antes de rodar o release.\n');
+    process.exit(1);
+}
 
 // Roda o versionamento com mensagem customizada
 execSync(`npm version ${typeInput} -m "chore(release): versão %s (${msg})"`, { stdio: 'inherit' });
 execSync('git push', { stdio: 'inherit' });
 execSync('git push --tags', { stdio: 'inherit' });
 
-console.log('Release finalizado com sucesso!');
-
-// Restaura o stash se havia alterações
-if (hadStash) {
-    console.log('Restaurando alterações stashadas...');
-    execSync('git stash pop', { stdio: 'inherit' });
-}
+console.log('Release finalizado com sucesso! ✅ (Interativo e Sem stash)');
