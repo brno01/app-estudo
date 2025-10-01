@@ -1,10 +1,13 @@
 {
   "name": "rest-api",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "description": "REST API para estudos",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "release:patch": "npm version patch && git push && git push --tags",
+    "release:minor": "npm version minor && git push && git push --tags",
+    "release:major": "npm version major && git push && git push --tags"
   },
   "keywords": [
     "rest",
