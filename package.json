@@ -1,10 +1,10 @@
 {
   "name": "rest-api",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "REST API para estudos",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon server.js",
     "release": "node scripts/release.js",
     "release:auto": "node -e \"const msg=process.env.MSG||'patch'; require('child_process').execSync(`npm version patch -m \\\"chore(release): versão %s (${msg})\\\" && git push && git push --tags`, {stdio:'inherit'})\"",
     "release:patch": "npm version patch -m \"chore(release): versão %s (patch)\" && git push && git push --tags",
