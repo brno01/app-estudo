@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
+const morgan = require('morgan');
 const apiV1ProductRouter = require('./router/api/v1/product');
+
+app.use(morgan('dev'));
 
 app.use('/api/v1/products', apiV1ProductRouter);
 

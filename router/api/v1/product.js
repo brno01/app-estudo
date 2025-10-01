@@ -21,31 +21,58 @@ router.get('/:id', (req, res, next) => {
     }
     if (id === 'not_found') {
         return res.status(404).json({
-            message: 'Produto não encontrado!'
+            message: `Produto com id:${id} não encontrado!`
         });
     } else {
         res.status(200).json({
-            message: `Produto encontrado com ID: ${id}`
+            message: `Produto encontrado`,
+            id: id
         });
     }
 });
 
 router.post('/', (req, res, next) => {
     res.status(201).json({
-        message: 'Produto criado com sucesso!'
+        message: 'Produto criado com sucesso!',
     });
 });
 
 router.patch('/:id', (req, res, next) => {
-    res.status(200).json({
-        message: 'Produto atualizado com sucesso!'
-    });
+    const id = req.params.id;
+    if (!id) {
+        return res.status(400).json({
+            message: 'ID do produto é obrigatório!'
+        });
+    }
+    if (id === 'not_found') {
+        return res.status(404).json({
+            message: 'Produto não encontrado!'
+        });
+    } else {
+        res.status(200).json({
+            message: `Produto atualizado com sucesso!`,
+            id: id
+        });
+    }
 });
 
 router.delete('/:id', (req, res, next) => {
-    res.status(204).json({
-        message: 'Produto removido com sucesso!'
-    });
+    const id = req.params.id;
+    if (!id) {
+        return res.status(400).json({
+            message: 'ID do produto é obrigatório!'
+        });
+    }
+    if (id === 'not_found') {
+        return res.status(404).json({
+            message: 'Produto não encontrado!'
+        });
+    } else {
+        res.status(200).json({
+            message: `Produto deletado com sucesso!`,
+            id: id
+        });
+    }
 });
 
 module.exports = router;
