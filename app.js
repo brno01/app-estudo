@@ -2,10 +2,12 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const apiV1ProductRouter = require('./router/api/v1/product');
+const apiV1RequestRouter = require('./router/api/v1/request');
 
 app.use(morgan('dev'));
 
 app.use('/api/v1/products', apiV1ProductRouter);
+app.use('/api/v1/requests', apiV1RequestRouter);
 
 app.use('/api/v1', (req, res) => {
     res.status(200).json({
