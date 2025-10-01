@@ -1,11 +1,12 @@
 {
   "name": "rest-api",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "REST API para estudos",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "release": "node scripts/release.js",
+    "release:auto": "node -e \"const msg=process.env.MSG||'patch'; require('child_process').execSync(`npm version patch -m \\\"chore(release): versão %s (${msg})\\\" && git push && git push --tags`, {stdio:'inherit'})\"",
     "release:patch": "npm version patch -m \"chore(release): versão %s (patch)\" && git push && git push --tags",
     "release:minor": "npm version minor -m \"chore(release): versão %s (minor)\" && git push && git push --tags",
     "release:major": "npm version major -m \"chore(release): versão %s (major)\" && git push && git push --tags"
