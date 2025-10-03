@@ -1,0 +1,14 @@
+CREATE TABLE products (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  createdAt TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updatedAt TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  name TEXT NOT NULL,
+  price NUMERIC(10,2) NOT NULL,
+  stock INT NOT NULL DEFAULT 0
+);
+
+CREATE TRIGGER set_updated_at_product
+BEFORE UPDATE ON product
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();

@@ -1,0 +1,14 @@
+CREATE TABLE orders (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  createdAt TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updatedAt TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  productId UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  quantity INT NOT NULL,
+  total NUMERIC(10,2) NOT NULL
+);
+
+CREATE TRIGGER set_updated_at_order
+BEFORE UPDATE ON order
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
