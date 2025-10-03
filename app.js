@@ -1,13 +1,17 @@
 const express = require('express');
-const app = express();
 const morgan = require('morgan');
+const requestMiddleware = require('./internal/api/v1/request');
+//const historyMiddleware = require('./internal/api/v1/history');
+
+const app = express();
+
 const apiV1ProductRouter = require('./router/api/v1/product');
 const apiV1OrderRouter = require('./router/api/v1/order');
 
 app.use(morgan('dev'));
 
-app.use('/api/v1/products', apiV1ProductRouter);
-app.use('/api/v1/requests', apiV1OrderRouter);
+app.use('/api/v1/products', requestMiddleware, apiV1ProductRouter);
+app.use('/api/v1/orders', requestMiddleware, apiV1OrderRouter);
 
 app.use('/api/v1', (req, res) => {
     res.status(200).json({
