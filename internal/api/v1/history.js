@@ -1,44 +1,36 @@
-const { Pool } = require('pg');
+import pool from '../../db/db.js';
 
-const pool = new Pool({
-    host: process.env.PG_HOST || 'localhost',
-    port: process.env.PG_PORT || 5432,
-    user: process.env.PG_USER || 'postgres',
-    password: process.env.PG_PASS || 'postgres',
-    database: process.env.PG_DB || 'mydb',
-});
+/**
+ * Salva histórico de operações CRUD e GET
+ * @param {'CREATE'|'UPDATE'|'DELETE'|'READ'} action - Tipo da operação
+ * @param {string} entity - Nome da tabela afetada
+ * @param {string|null} entityId - ID do registro (null para listagens)
+ * @param {import('express').Request} req - Objeto da requisição
+ */
+export async function saveHistory(action, entity, entityId, req) {
+    try {
+        const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
+        const port = req.socket?.remotePort || null;
+        const userToken = req.context?.apiKey || null;
+        const method = req.method || null;
+        const path = req.originalUrl || null;
 
-module.exports = (req, res, next) => {
-    const start = Date.now();
-
-    res.on('finish', async () => {
-        const duration = Date.now() - start;
         const query = `
-      INSERT INTO request_history 
-        (method, url, status, ip, port, api_key, body, params, query, timestamp, duration_ms)
-      VALUES 
-        ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
-    `;
-        const values = [
-            req.method,
-            req.originalUrl,
-            res.statusCode,
-            req.ip,
-            req.socket.remotePort,
-            req.context?.apiKey || null,
-            req.body ? JSON.stringify(req.body) : null,
-            req.params ? JSON.stringify(req.params) : null,
-            req.query ? JSON.stringify(req.query) : null,
-            new Date(),
-            duration
-        ];
+            INSERT INTO history
+                (id, "createdAt", action, entity, "entityId", "userToken", ip, port, method, path)
+            VALUES
+                (gen_random_uuid(), NOW() AT TIME ZONE 'UTC', $1, $2, $3, $4, $5, $6, $7, $8)
+            RETURNING *
+        `;
 
-        try {
-            await pool.query(query, values);
-        } catch (err) {
-            console.error('Erro ao salvar histórico:', err.message);
-        }
-    });
+        const values = [action, entity, entityId, userToken, ip, port, method, path];
 
-    next();
-};
+        const { rows } = await pool.query(query, values);
+        console.log('Histórico salvo:', rows[0]);
+        return rows[0];
+    } catch (err) {
+        console.error('Erro ao salvar histórico:', err);
+    }
+}
+
+export default saveHistory;

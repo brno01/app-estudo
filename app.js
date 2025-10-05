@@ -1,17 +1,19 @@
-const express = require('express');
-const morgan = require('morgan');
-const requestMiddleware = require('./internal/api/v1/request');
-//const historyMiddleware = require('./internal/api/v1/history');
+import express from 'express';
+import morgan from 'morgan';
+import requestMiddleware from './internal/api/v1/request.js';
+import historyMiddleware from './internal/api/v1/history.js';
 
 const app = express();
 
-const apiV1ProductRouter = require('./router/api/v1/product');
-const apiV1OrderRouter = require('./router/api/v1/order');
+import apiV1CustomerRouter from './router/api/v1/customer.js';
+import apiV1OrderRouter from './router/api/v1/order.js';
+import apiV1ProductRouter from './router/api/v1/product.js';
 
 app.use(morgan('dev'));
 
-app.use('/api/v1/products', requestMiddleware, apiV1ProductRouter);
-app.use('/api/v1/orders', requestMiddleware, apiV1OrderRouter);
+app.use('/api/v1/customer', requestMiddleware, historyMiddleware, apiV1CustomerRouter);
+app.use('/api/v1/product', requestMiddleware, historyMiddleware, apiV1ProductRouter);
+app.use('/api/v1/order', requestMiddleware, historyMiddleware, apiV1OrderRouter);
 
 app.use('/api/v1', (req, res) => {
     res.status(200).json({
@@ -32,4 +34,4 @@ app.use('/api/v1', (req, res) => {
     next();
 });
 
-module.exports = app;
+export default app;

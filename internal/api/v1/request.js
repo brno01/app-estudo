@@ -1,26 +1,19 @@
-const express = require('express');
-const router = express.Router();
-require('dotenv').config();
+import chalk from 'chalk';
+import express from 'express';
 
-// Middleware global para /products
-router.use(express.json()); // garante que req.body seja parseado
+const router = express.Router();
+
+router.use(express.json());
 
 router.use((req, res, next) => {
     const start = Date.now();
-    console.log(`[REQ] ${req.method} ${req.originalUrl} - IP: ${req.ip} - PORT: ${req.socket.localPort}`);
 
-    // 1. Verifica API Key
     const apiKey = req.headers['x-api-key'];
-    if (apiKey !== process.env.API_KEY) {
-        return res.status(403).json({ message: 'API Key inválida' });
-    }
     if (!apiKey) {
         return res.status(401).json({ message: 'API Key é obrigatória' });
-    } else {
-        req.context = { apiKey };
     }
+    req.context = { apiKey };
 
-    // 2. Se método for de escrita, validar body
     if (['POST', 'PUT', 'PATCH'].includes(req.method)) {
         if (!req.is('application/json')) {
             return res.status(415).json({ message: 'Content-Type deve ser application/json' });
@@ -30,13 +23,23 @@ router.use((req, res, next) => {
         }
     }
 
-    // 3. Log de saída + latência
     res.on('finish', () => {
         const elapsed = Date.now() - start;
-        console.log(`[RES] ${req.method} ${req.originalUrl} - Status: ${res.statusCode} - ${elapsed}ms`);
+
+        const methodColor = chalk.cyan.bold(req.method);
+        const urlColor = chalk.yellow(req.originalUrl);
+        const statusColor =
+            res.statusCode >= 200 && res.statusCode < 300
+                ? chalk.green(res.statusCode)
+                : res.statusCode >= 400 && res.statusCode < 500
+                    ? chalk.red(res.statusCode)
+                    : chalk.magenta(res.statusCode);
+        const timeColor = chalk.blue(`${elapsed}ms`);
+
+        console.log(`[${methodColor}] ${urlColor} - Status: ${statusColor} - Tempo: ${timeColor}`);
     });
 
     next();
 });
 
-module.exports = router;
+export default router;

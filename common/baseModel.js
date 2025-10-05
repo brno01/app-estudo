@@ -1,12 +1,23 @@
 import { v4 as uuidv4 } from "uuid";
 
-function baseModel() {
-    return {
-        id: uuidv4(),
-        createdAt: new Date().toISOString(),   // GMT ISO
-        updatedAt: new Date().toISOString(),
-        active: true,
-    };
-}
+export default class BaseModel {
+    constructor(data = {}) {
+        const nowUtc = new Date().toISOString().replace("T", " ").replace("Z", "");
 
-export default baseModel;
+        this.id = data.id || uuidv4();
+        this.createdAt = data.createdAt || nowUtc;
+        this.updatedAt = data.updatedAt || nowUtc;
+        this.active = data.active !== undefined ? data.active : true;
+    }
+
+    static toUTC(date) {
+        return new Date(date).toISOString().replace("T", " ").replace("Z", "");
+    }
+
+    touch() {
+        this.updatedAt = BaseModel.toUTC(new Date());
+    }
+}
+export function baseModel(data) {
+    return new BaseModel(data);
+}

@@ -1,7 +1,9 @@
-const http = require('http');
-const app = require('./app');
+process.env.TZ = 'UTC';
+import { createServer } from 'http';
+import app from './app.js';
+
 const port = process.env.PORT || 4000;
-const server = http.createServer(app);
+const server = createServer(app);
 server.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
+    console.log(`Rodando na porta ${port}`);
 });
