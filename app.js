@@ -1,7 +1,8 @@
+import bodyParser from 'body-parser';
 import express from 'express';
 import morgan from 'morgan';
-import requestMiddleware from './internal/api/v1/request.js';
 import historyMiddleware from './internal/api/v1/history.js';
+import requestMiddleware from './internal/api/v1/request.js';
 
 const app = express();
 
@@ -10,6 +11,8 @@ import apiV1OrderRouter from './router/api/v1/order.js';
 import apiV1ProductRouter from './router/api/v1/product.js';
 
 app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use('/api/v1/customer', requestMiddleware, historyMiddleware, apiV1CustomerRouter);
 app.use('/api/v1/product', requestMiddleware, historyMiddleware, apiV1ProductRouter);

@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS "order" (
     "createdAt" TIMESTAMP WITHOUT TIME ZONE DEFAULT (now() AT TIME ZONE 'utc'),
     "updatedAt" TIMESTAMP WITHOUT TIME ZONE DEFAULT (now() AT TIME ZONE 'utc'),
     active BOOLEAN DEFAULT TRUE,
-    productId UUID NOT NULL REFERENCES product(id) ON DELETE CASCADE,
-    customerId UUID REFERENCES customer(id) ON DELETE SET NULL,
+    "productId" UUID NOT NULL REFERENCES product(id) ON DELETE CASCADE,
+    "customerId" UUID REFERENCES customer(id) ON DELETE SET NULL,
     quantity INT NOT NULL,
     total NUMERIC(20,3) NOT NULL
 );
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS history (
     "updatedAt" TIMESTAMP WITHOUT TIME ZONE DEFAULT (now() AT TIME ZONE 'utc'),
     action VARCHAR(50) NOT NULL,
     entity VARCHAR(50) NOT NULL,
-    "entityId" UUID NOT NULL,
+    "entityId" UUID,
     "userToken" TEXT,
     ip VARCHAR(45),
     port INT,

@@ -1,7 +1,7 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import pool from '../../../internal/db/db.js';
 import { saveHistory } from '../../../internal/api/v1/history.js';
+import pool from '../../../internal/db/db.js';
 
 const router = express.Router();
 
@@ -17,8 +17,12 @@ router.get('/', async (req, res, next) => {
             [limit, offset]
         );
 
-        await saveHistory('READ', 'customer', null, req);
-        res.json(rows);
+        // await saveHistory('READ', 'customer', null, req);
+        res.status(200).json({
+            page,
+            count: rows.length,
+            data: rows
+        });
     } catch (err) {
         next(err);
     }
@@ -36,7 +40,10 @@ router.get('/:id', async (req, res, next) => {
         if (!rows[0]) return res.status(404).json({ message: 'Cliente não encontrado' });
 
         await saveHistory('READ', 'customer', id, req);
-        res.json(rows[0]);
+        res.status(200).json({
+            status: "success",
+            customer: rows[0]
+        });
     } catch (err) {
         next(err);
     }
@@ -55,7 +62,7 @@ router.post('/', async (req, res, next) => {
             'SELECT id FROM customer WHERE email=$1',
             [email]
         );
-        if (existing.length > 0) return res.status(400).json({ message: 'Email já cadastrado' });
+        if (existing.length > 0) return res.status(409).json({ message: 'Email já cadastrado' });
 
         const id = uuidv4();
         const { rows } = await pool.query(
@@ -66,7 +73,10 @@ router.post('/', async (req, res, next) => {
         );
 
         await saveHistory('CREATE', 'customer', id, req);
-        res.status(201).json(rows[0]);
+        res.status(201).json({
+            status: "success",
+            customer: rows[0]
+        });
     } catch (err) {
         next(err);
     }
@@ -108,7 +118,10 @@ router.patch('/:id', async (req, res, next) => {
         if (!rows[0]) return res.status(404).json({ message: 'Cliente não encontrado' });
 
         await saveHistory('UPDATE', 'customer', id, req);
-        res.json(rows[0]);
+        res.status(201).json({
+            status: "success",
+            customer: rows[0]
+        });
     } catch (err) {
         next(err);
     }
@@ -127,7 +140,10 @@ router.delete('/:id', async (req, res, next) => {
         if (!rows[0]) return res.status(404).json({ message: 'Cliente não encontrado' });
 
         await saveHistory('DELETE', 'customer', id, req);
-        res.sendStatus(204);
+        res.status(204).json({
+            status: "success",
+            customer: rows[0]
+        });
     } catch (err) {
         next(err);
     }

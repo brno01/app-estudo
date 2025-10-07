@@ -20,8 +20,12 @@ router.get('/', async (req, res, next) => {
              LIMIT $1 OFFSET $2`,
             [limit, offset]
         );
-        await saveHistory('READ', 'product', null, req);
-        res.json(rows);
+        // await saveHistory('READ', 'product', null, req);
+        res.status(200).json({
+            page,
+            count: rows.length,
+            data: rows
+        });
     } catch (err) { next(err); }
 });
 
@@ -37,7 +41,10 @@ router.get('/:id', async (req, res, next) => {
         );
         if (!rows[0]) return res.status(404).json({ message: 'Produto não encontrado' });
         await saveHistory('READ', 'product', id, req);
-        res.json(rows[0]);
+        res.status(200).json({
+            status: "success",
+            product: rows[0]
+        });
     } catch (err) { next(err); }
 });
 
@@ -55,7 +62,10 @@ router.post('/', async (req, res, next) => {
             [product.id, product.createdAt, product.updatedAt, product.active, name, price, stock]
         );
         await saveHistory('CREATE', 'product', rows[0].id, req);
-        res.status(201).json(rows[0]);
+        res.status(201).json({
+            status: "success",
+            product: rows[0]
+        });
     } catch (err) { next(err); }
 });
 
@@ -87,7 +97,10 @@ router.patch('/:id', async (req, res, next) => {
         if (!rows[0]) return res.status(404).json({ message: 'Produto não encontrado' });
 
         await saveHistory('UPDATE', 'product', id, req);
-        res.json(rows[0]);
+        res.status(200).json({
+            status: "success",
+            product: rows[0]
+        });
     } catch (err) { next(err); }
 });
 
@@ -103,7 +116,7 @@ router.delete('/:id', async (req, res, next) => {
 
         await saveHistory('DELETE', 'product', id, req);
         res.status(204).json({
-            message: 'Produto desativado',
+            status: "success",
             product: rows[0]
         });
     } catch (err) { next(err); }
