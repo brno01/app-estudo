@@ -1,7 +1,4 @@
-FROM node:latest-alpine
-
-# Upgrade Alpine packages to fix vulnerabilities
-RUN apk upgrade --no-cache
+FROM node:latest
 
 WORKDIR /usr/src/app
 
