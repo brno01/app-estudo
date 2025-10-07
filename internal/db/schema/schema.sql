@@ -33,6 +33,11 @@ CREATE TABLE IF NOT EXISTS customer (
     "cellPhone" VARCHAR(255)
 );
 
+CREATE TRIGGER updatedCustomer
+BEFORE UPDATE ON customer
+FOR EACH ROW
+EXECUTE FUNCTION updatedAt();
+
 -- Tabela de pedidos
 CREATE TABLE IF NOT EXISTS "order" (
     id UUID PRIMARY KEY,
@@ -64,6 +69,11 @@ CREATE TABLE IF NOT EXISTS history (
     method VARCHAR(10),
     path TEXT
 );
+
+CREATE TRIGGER updatedHistory
+BEFORE UPDATE ON history
+FOR EACH ROW
+EXECUTE FUNCTION updatedAt();
 
 -- DROP TABLE IF EXISTS history CASCADE;
 -- DROP TABLE IF EXISTS "order" CASCADE;

@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 services:
   app:
@@ -18,6 +18,8 @@ services:
       - db
     networks:
       - backend
+    volumes:
+      - .:/usr/src/app
 
   db:
     image: postgres:latest
@@ -31,6 +33,7 @@ services:
       - "4406:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+      - ./internal/db/schema/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
       - backend
 
