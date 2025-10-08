@@ -22,6 +22,7 @@ services:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     command: npm run dev
+    profiles: ["local", "remote"]
 
   db:
     image: postgres:latest
@@ -39,6 +40,7 @@ services:
       - ./internal/db/schema/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
       - backend
+    profiles: ["local"]
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -55,6 +57,7 @@ services:
       - backend
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+    profiles: ["local"]
 
 volumes:
   db_data:
