@@ -17,15 +17,18 @@ const pool = new Pool({
 pool.connect()
     .then(client => {
         console.log({
-            message: 'Rodando! ✅',
+            message: 'Connected! ✅',
             host: process.env.POSTGRES_HOST,
             port: process.env.POSTGRES_PORT,
             database: process.env.POSTGRES_DB,
             user: process.env.POSTGRES_USER
         });
-        console.log({ message: 'Conectado ao Postgres com sucesso! ✅' });
+        console.log({ message: 'Conectado ao Postgres com sucesso!' });
         client.release();
     })
-    .catch(err => console.error('Erro ao conectar no Postgres', err.stack));
+    .catch(err => console.error({
+        status: 'error',
+        error: err.stack
+    }));
 
 export default pool;
