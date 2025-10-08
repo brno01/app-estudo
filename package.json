@@ -1,6 +1,6 @@
 {
   "name": "rest-api",
-  "version": "0.0.40",
+  "version": "0.0.42",
   "description": "REST API para estudos",
   "main": "index.js",
   "type": "module",

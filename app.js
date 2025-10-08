@@ -18,20 +18,38 @@ app.use('/api/v1/customer', requestMiddleware, historyMiddleware, apiV1CustomerR
 app.use('/api/v1/product', requestMiddleware, historyMiddleware, apiV1ProductRouter);
 app.use('/api/v1/order', requestMiddleware, historyMiddleware, apiV1OrderRouter);
 
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization');
+    if (req.method === 'OPTIONS') {
+        res.header(
+            'Access-Control-Allow-Methods',
+            'PUT, POST, PATCH, DELETE, GET'
+        );
+        return res.status(200).json({});
+    }
+    next();
+});
+
 app.use('/api/v1', (req, res) => {
     res.status(200).json({
-        message: 'Tudo funcionando!'
+        status: (200),
+        message: 'API funcionando!'
     });
     res.status(404).json({
+        status: (404),
         message: 'Rota não encontrada!'
     });
     res.status(500).json({
+        status: (500),
         message: 'Erro interno do servidor!'
     });
     res.status(400).json({
+        status: (400),
         message: 'Requisição inválida!'
     });
     res.status(401 || 403).json({
+        status: (401 || 403),
         message: 'Não autorizado!'
     });
     next();

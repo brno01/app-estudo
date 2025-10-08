@@ -7,26 +7,51 @@ const router = express.Router();
 
 // GET /api/v1/product → lista produtos com paginação
 router.get('/', async (req, res, next) => {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const offset = (page - 1) * limit;
-
     try {
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+
+        if (page < 1 || limit < 1) {
+            return res.status(400).json({
+                error: 'Parâmetros "page" e "limit" devem ser números positivos.'
+            });
+        }
+
+        const offset = (page - 1) * limit;
+
         const { rows } = await pool.query(
             `SELECT id, "createdAt", "updatedAt", active, name, price, stock
              FROM product
-             WHERE active=true
+             WHERE active = true
              ORDER BY "createdAt" DESC
              LIMIT $1 OFFSET $2`,
             [limit, offset]
         );
-        // await saveHistory('READ', 'product', null, req);
-        res.status(200).json({
+
+        try {
+            await saveHistory('READ', 'product', null, req);
+        } catch (historyErr) {
+            console.error('Falha ao salvar histórico:', historyErr);
+        }
+
+        return res.status(200).json({
             page,
             count: rows.length,
             data: rows
         });
-    } catch (err) { next(err); }
+    } catch (error) {
+        console.error('Erro ao buscar produtos:', error);
+
+        if (error.code === '22P02') {
+            return res.status(400).json({
+                error: 'Parâmetros inválidos. Verifique os valores enviados.'
+            });
+        }
+
+        return res.status(500).json({
+            error: 'Erro interno ao buscar produtos.'
+        });
+    }
 });
 
 // GET /api/v1/product/:id → produto específico
