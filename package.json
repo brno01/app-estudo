@@ -16,7 +16,7 @@
     "api"
   ],
   "author": "Bruno Santos de Oliveira",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "express": "^5.1.0"
   }
